@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genetic Inheritance of Blood Type</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .generation {
+            margin-left: 20px;
+        }
+        .person {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Genetic Inheritance of Blood Type</h1>
+    <div id="family-tree"></div>
+
+    <script>
+        // Define the person object
+        class Person {
+            constructor(generations) {
+                if (generations > 1) {
+                    // Create parents recursively
+                    this.parents = [new Person(generations - 1), new Person(generations - 1)];
+
+                    // Assign alleles from parents
+                    this.alleles = [
+                        this.parents[0].alleles[Math.floor(Math.random() * 2)],
+                        this.parents[1].alleles[Math.floor(Math.random() * 2)]
+                    ];
+                } else {
+                    // No parents, assign random alleles
+                    this.parents = [null, null];
+                    this.alleles = [randomAllele(), randomAllele()];
+                }
+            }
+        }
+
+        // Function to generate a random allele
+        function randomAllele() {
+            const alleles = ['A', 'B', 'O'];
+            return alleles[Math.floor(Math.random() * 3)];
+        }
+
+        // Function to create the family tree and display it
+        function createFamilyTree(generations) {
+            const rootPerson = new Person(generations);
+            const familyTreeDiv = document.getElementById('family-tree');
+            printFamily(rootPerson, 0, familyTreeDiv);
+        }
+
+        // Function to print the family tree
+        function printFamily(person, generation, parentElement) {
+            if (!person) return;
+
+            // Create a new div for the person
+            const personDiv = document.createElement('div');
+            personDiv.classList.add('generation');
+            personDiv.style.marginLeft = `${generation * 20}px`;
+
+            // Set the text content based on the generation
+            let label = "";
+            if (generation === 0) {
+                label = `Child (Generation ${generation}): blood type ${person.alleles[0]}${person.alleles[1]}`;
+            } else if (generation === 1) {
+                label = `Parent (Generation ${generation}): blood type ${person.alleles[0]}${person.alleles[1]}`;
+            } else {
+                label = `${'Great-'.repeat(generation - 2)}Grandparent (Generation ${generation}): blood type ${person.alleles[0]}${person.alleles[1]}`;
+            }
+            personDiv.textContent = label;
+            personDiv.classList.add('person');
+
+            // Append the person to the parent element
+            parentElement.appendChild(personDiv);
+
+            // Recursively print the parents
+            printFamily(person.parents[0], generation + 1, parentElement);
+            printFamily(person.parents[1], generation + 1, parentElement);
+        }
+
+        // Generate and display the family tree
+        createFamilyTree(3);
+    </script>
+</body>
+</html>

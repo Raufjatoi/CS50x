@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inheritance - Blood Type Generator</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: rgb(25, 187, 237);
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+        }
+
+        .input-group {
+            margin: 20px 0;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 200px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #familyTree {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .family-member {
+            margin-left: 20px;
+        }
+
+        .family-member span {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Inheritance - Blood Type Generator</h1>
+        <p>Enter your blood type and generate your family tree's blood types!</p>
+        <div class="input-group">
+            <input type="text" id="bloodTypeInput" placeholder="Enter your blood type (A, B, AB, O)">
+            <button onclick="generateFamilyTree()">Generate Family Tree</button>
+        </div>
+        <div id="familyTree"></div>
+    </div>
+    <script>
+        function generateFamilyTree() {
+            const input = document.getElementById('bloodTypeInput').value.trim().toUpperCase();
+            if (!['A', 'B', 'AB', 'O'].includes(input)) {
+                alert("Please enter a valid blood type (A, B, AB, O).");
+                return;
+            }
+            
+            const familyTreeDiv = document.getElementById('familyTree');
+            familyTreeDiv.innerHTML = ''; // Clear previous tree
+            const generations = 3;
+            
+            const rootPerson = createFamily(generations);
+            rootPerson.alleles = assignAlleles(input);
+            
+            const treeHTML = generateTreeHTML(rootPerson, 0);
+            familyTreeDiv.innerHTML = treeHTML;
+        }
+
+        function createFamily(generations) {
+            const person = {
+                parents: [null, null],
+                alleles: []
+            };
+
+            if (generations > 1) {
+                person.parents[0] = createFamily(generations - 1);
+                person.parents[1] = createFamily(generations - 1);
+                person.alleles = [
+                    randomAlleleFromParent(person.parents[0]),
+                    randomAlleleFromParent(person.parents[1])
+                ];
+            } else {
+                person.alleles = [randomAllele(), randomAllele()];
+            }
+
+            return person;
+        }
+
+        function assignAlleles(bloodType) {
+            switch (bloodType) {
+                case 'A':
+                    return ['A', randomAllele(['A', 'O'])];
+                case 'B':
+                    return ['B', randomAllele(['B', 'O'])];
+                case 'AB':
+                    return ['A', 'B'];
+                case 'O':
+                    return ['O', 'O'];
+            }
+        }
+
+        function randomAlleleFromParent(parent) {
+            return parent.alleles[Math.floor(Math.random() * 2)];
+        }
+
+        function randomAllele(possibleAlleles = ['A', 'B', 'O']) {
+            const r = Math.floor(Math.random() * possibleAlleles.length);
+            return possibleAlleles[r];
+        }
+
+        function generateTreeHTML(person, generation) {
+            if (!person) return '';
+            
+            const memberType = generation === 0 ? 'Child' : generation === 1 ? 'Parent' : 'Grandparent';
+            const indent = '&nbsp;'.repeat(generation * 4);
+            
+            let html = `<div class="family-member">${indent}<span>${memberType} (Generation ${generation})</span>: blood type ${person.alleles.join('')}</div>`;
+            html += generateTreeHTML(person.parents[0], generation + 1);
+            html += generateTreeHTML(person.parents[1], generation + 1);
+            
+            return html;
+        }
+    </script>
+</body>
+</html>
