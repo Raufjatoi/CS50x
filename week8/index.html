@@ -12,7 +12,7 @@
             const mcButtons = document.querySelectorAll('.mc-option');
             mcButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const correctAnswer = 'option2';
+                    const correctAnswer = 'option1';
                     const result = document.querySelector('#mc-result');
                     if (this.id === correctAnswer) {
                         this.style.backgroundColor = 'green';
@@ -29,7 +29,7 @@
             // Free Response Question
             document.querySelector('#fr-submit').addEventListener('click', function() {
                 const userAnswer = document.querySelector('#fr-input').value.trim().toLowerCase();
-                const correctAnswer = 'paris';
+                const correctAnswer = 'Berlin';
                 const result = document.querySelector('#fr-result');
                 if (userAnswer === correctAnswer) {
                     document.querySelector('#fr-input').style.backgroundColor = 'green';
@@ -51,17 +51,17 @@
 
     <div class="container">
         <div class="section">
-            <h2>Part 1: Multiple Choice</h2>
+            <h2>Multiple Choice</h2>
             <hr>
-            <h3>What is the capital of France?</h3>
-            <button class="mc-option" id="option1">Berlin</button>
-            <button class="mc-option" id="option2">Paris</button>
-            <button class="mc-option" id="option3">Madrid</button>
+            <h3>What is Random Tree ?</h3>
+            <button class="mc-option" id="option1">ML Algo 😐</button>
+            <button class="mc-option" id="option2">DL Algo</button>
+            <button class="mc-option" id="option3">Type of neural network 🙂</button>
             <p id="mc-result"></p>
         </div>
 
         <div class="section">
-            <h2>Part 2: Free Response</h2>
+            <h2>Free Response</h2>
             <hr>
             <h3>What is the capital of Germany?</h3>
             <input type="text" id="fr-input">
